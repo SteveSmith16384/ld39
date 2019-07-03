@@ -92,8 +92,8 @@ public class CoalExtractor extends Building<CoalExtractor> {
                     int output = outputs[x + y * out_size];
                     if (output == 1) {
                         Map.Tile tile = map.getTile(bx + x, by + y);
-                        if (tile != null && tile.building instanceof CoalConsumer) {
-                            CoalConsumer belt = (CoalConsumer)tile.building;
+                        if (tile != null && tile.building instanceof ICoalConsumer) {
+                            ICoalConsumer belt = (ICoalConsumer)tile.building;
                             if (belt.accept(new Coal(coalSpawn))) {
                                 coal -= coalSpawn;
                                 noOutlet = false;

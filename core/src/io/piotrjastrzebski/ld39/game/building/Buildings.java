@@ -86,8 +86,8 @@ public class Buildings implements InputProcessor {
             for (int oy = 0; oy < building.bounds.height; oy++) {
                 Map.Tile tile = map.getTile(building.bounds.x + ox, building.bounds.y + oy);
                 if (tile.building == null) throw new AssertionError("Tile " + tile + " not already occupied ");
-                if (tile.building instanceof PowerConnector) {
-                    ((PowerConnector)tile.building).disconnectAll();
+                if (tile.building instanceof IPowerConnector) {
+                    ((IPowerConnector)tile.building).disconnectAll();
                 }
                 tile.building = null;
             }
@@ -107,7 +107,7 @@ public class Buildings implements InputProcessor {
                 tile.building = duplicate;
             }
         }
-        if (build instanceof PowerConnector) {
+        if (build instanceof IPowerConnector) {
             for (Building building : buildings) {
                 if (building instanceof UtilityPole) {
                     ((UtilityPole)building).invalidate();
@@ -118,8 +118,8 @@ public class Buildings implements InputProcessor {
     }
 
     private void cancelBuilding () {
-        if (build instanceof PowerConnector) {
-            ((PowerConnector)build).disconnectAll();
+        if (build instanceof IPowerConnector) {
+            ((IPowerConnector)build).disconnectAll();
         }
         build = null;
     }

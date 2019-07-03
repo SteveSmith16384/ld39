@@ -8,6 +8,7 @@ import io.piotrjastrzebski.ld39.game.Map;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
 
 public abstract class Building<T extends Building> {
+	
     public final int EAST = 0;
     public final int SOUTH = 1;
     public final int WEST = 2;
@@ -88,7 +89,7 @@ public abstract class Building<T extends Building> {
         return name;
     }
 
-    public void flooded (boolean flooded) {
+    public void flooded(boolean flooded) {
         this.flooded = flooded;
     }
 }

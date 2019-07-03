@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import io.piotrjastrzebski.ld39.game.Coal;
 import io.piotrjastrzebski.ld39.game.Map;
 
-public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer{
+public class ConveyorBelt extends Building<ConveyorBelt> implements ICoalConsumer{
     private Coal coal;
     private float timer;
     private final float moveTime = .5f;
@@ -21,7 +21,7 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
         timer += delta;
         if (timer >= moveTime) {
             timer = moveTime;
-            CoalConsumer next = findNext();
+            ICoalConsumer next = findNext();
             if (next != null) {
                 if (next.accept(coal)) {
                     timer = 0;
@@ -31,7 +31,7 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
         }
     }
 
-    private CoalConsumer findNext () {
+    private ICoalConsumer findNext () {
         Map.Tile tile = null;
         switch (direction) {
         case EAST: {
@@ -48,8 +48,8 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
         } break;
         }
         if (tile == null) return null;
-        if (tile.building instanceof CoalConsumer) {
-            return (CoalConsumer)tile.building;
+        if (tile.building instanceof ICoalConsumer) {
+            return (ICoalConsumer)tile.building;
         }
         return null;
     }

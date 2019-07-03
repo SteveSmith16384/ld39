@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 
-public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer, PowerConnector, PowerProducer {
+public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalConsumer, IPowerConnector, IPowerProducer {
     private Array<Coal> coals = new Array<>();
     private int coalCap = 10;
     private float burnrate = 10;
@@ -89,9 +89,9 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
         return super.duplicate(instance);
     }
 
-    private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
+    private ObjectSet<IPowerConnector> connectors = new ObjectSet<>();
 
-    @Override public boolean connect (PowerConnector other) {
+    @Override public boolean connect (IPowerConnector other) {
         if (other instanceof UtilityPole) {
             connectors.add(other);
             return true;
@@ -99,18 +99,18 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
         return false;
     }
 
-    @Override public void disconnect (PowerConnector connector) {
+    @Override public void disconnect (IPowerConnector connector) {
         connectors.remove(connector);
     }
 
     @Override public void disconnectAll () {
-        for (PowerConnector connector : connectors) {
+        for (IPowerConnector connector : connectors) {
             connector.disconnect(this);
         }
         connectors.clear();
     }
 
-    @Override public ObjectSet<PowerConnector> connected () {
+    @Override public ObjectSet<IPowerConnector> connected () {
         return connectors;
     }
 

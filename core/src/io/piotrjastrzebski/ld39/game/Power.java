@@ -15,28 +15,28 @@ public class Power {
         this.buildings = buildings;
     }
 
-    private Array<PowerProducer> allProducers = new Array<>();
-    private Array<PowerConsumer> allConsumers = new Array<>();
+    private Array<IPowerProducer> allProducers = new Array<>();
+    private Array<IPowerConsumer> allConsumers = new Array<>();
     private Array<Grid> grids = new Array<>();
     public void update(float delta) {
         totalPower = 0;
         allConsumers.clear();
         allProducers.clear();
         for (Building building : buildings.getAll()) {
-            if (building instanceof PowerProducer) {
-                allProducers.add((PowerProducer)building);
+            if (building instanceof IPowerProducer) {
+                allProducers.add((IPowerProducer)building);
             }
-            if (building instanceof PowerConsumer) {
-                allConsumers.add((PowerConsumer)building);
+            if (building instanceof IPowerConsumer) {
+                allConsumers.add((IPowerConsumer)building);
             }
         }
 
         grids.clear();
-        for (PowerProducer producer : allProducers) {
-            if (!(producer instanceof PowerConnector)) {
+        for (IPowerProducer producer : allProducers) {
+            if (!(producer instanceof IPowerConnector)) {
                 throw new AssertionError("Welp");
             }
-            PowerConnector connector = (PowerConnector)producer;
+            IPowerConnector connector = (IPowerConnector)producer;
             Grid selected = null;
             for (Grid grid : grids) {
                 if (grid.producers.contains(producer)) {
@@ -55,37 +55,37 @@ public class Power {
         for (Grid grid : grids) {
             float gridPower = 0;
             float gridRequired = 0;
-            for (PowerProducer producer : grid.producers) {
+            for (IPowerProducer producer : grid.producers) {
                 totalPower += producer.storage();
                 gridPower += producer.storage();
             }
 
             requiredPower = 0;
-            for (PowerConsumer consumer : grid.consumers) {
+            for (IPowerConsumer consumer : grid.consumers) {
                 requiredPower += consumer.required();
                 gridRequired += consumer.required();
             }
 
             if (gridPower >= gridRequired) {
-                for (PowerProducer producer : grid.producers) {
+                for (IPowerProducer producer : grid.producers) {
                     gridRequired = producer.consume(gridRequired);
                 }
-                for (PowerConsumer consumer : grid.consumers) {
+                for (IPowerConsumer consumer : grid.consumers) {
                     consumer.provide();
                 }
             }
         }
     }
 
-    private void addConnectors (Grid grid, PowerConnector source) {
+    private void addConnectors (Grid grid, IPowerConnector source) {
         if (!grid.connectors.add(source)) return;
-        if (source instanceof PowerProducer) {
-            grid.producers.add((PowerProducer)source);
+        if (source instanceof IPowerProducer) {
+            grid.producers.add((IPowerProducer)source);
         }
-        if (source instanceof PowerConsumer) {
-            grid.consumers.add((PowerConsumer)source);
+        if (source instanceof IPowerConsumer) {
+            grid.consumers.add((IPowerConsumer)source);
         }
-        for (PowerConnector connector : source.connected()) {
+        for (IPowerConnector connector : source.connected()) {
             addConnectors(grid, connector);
         }
     }
@@ -95,9 +95,9 @@ public class Power {
         shapes.setColor(Color.CYAN);
 
         for (Grid grid : grids) {
-            for (PowerConnector connector : grid.connectors) {
+            for (IPowerConnector connector : grid.connectors) {
                 Building cc = (Building)connector;
-                for (PowerConnector other : connector.connected()) {
+                for (IPowerConnector other : connector.connected()) {
                     Building oc = (Building)other;
                     shapes.line(cc.cx(), cc.cy(), oc.cx(), oc.cy());
                 }
@@ -107,9 +107,9 @@ public class Power {
     }
 
     static class Grid {
-        ObjectSet<PowerProducer> producers = new ObjectSet<>();
-        ObjectSet<PowerConsumer> consumers = new ObjectSet<>();
-        ObjectSet<PowerConnector> connectors = new ObjectSet<>();
+        ObjectSet<IPowerProducer> producers = new ObjectSet<>();
+        ObjectSet<IPowerConsumer> consumers = new ObjectSet<>();
+        ObjectSet<IPowerConnector> connectors = new ObjectSet<>();
     }
 
     public float getTotalPower () {

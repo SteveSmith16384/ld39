@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ObjectSet;
 import io.piotrjastrzebski.ld39.game.Research;
 
-public class SolarPanel extends Building<SolarPanel> implements PowerProducer, PowerConnector {
+public class SolarPanel extends Building<SolarPanel> implements IPowerProducer, IPowerConnector {
+	
     protected final static float powerPerSecond = 10; // pre efficiency scale
     private float powerCap = 50;
     private float power;
@@ -38,9 +39,9 @@ public class SolarPanel extends Building<SolarPanel> implements PowerProducer, P
         return super.duplicate(instance);
     }
 
-    private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
+    private ObjectSet<IPowerConnector> connectors = new ObjectSet<>();
 
-    @Override public boolean connect (PowerConnector other) {
+    @Override public boolean connect (IPowerConnector other) {
         if (other instanceof UtilityPole) {
             connectors.add(other);
             return true;
@@ -48,18 +49,18 @@ public class SolarPanel extends Building<SolarPanel> implements PowerProducer, P
         return false;
     }
 
-    @Override public void disconnect (PowerConnector connector) {
+    @Override public void disconnect (IPowerConnector connector) {
         connectors.remove(connector);
     }
 
     @Override public void disconnectAll () {
-        for (PowerConnector connector : connectors) {
+        for (IPowerConnector connector : connectors) {
             connector.disconnect(this);
         }
         connectors.clear();
     }
 
-    @Override public ObjectSet<PowerConnector> connected () {
+    @Override public ObjectSet<IPowerConnector> connected () {
         return connectors;
     }
 
