@@ -12,21 +12,30 @@ import io.piotrjastrzebski.ld39.game.utils.IntRect;
 import io.piotrjastrzebski.ld39.game.utils.Maths;
 
 public class Map {
-	private Tile[] tiles;
-	public final int width;
-	public final int height;
+
+	public static int TILE_TYPE_WATER = 0;
+	public static int TILE_TYPE_GROUND = 1;
+	public static int TILE_TYPE_HILL = 2;
+
 	public static final float COAL_MAX = 100;
 	public static final float ELEV_MIN = -5;
 	public static final float ELEV_MAX = 50;
+
+	private Tile[] tiles;
+	public final int width;
+	public final int height;
 	public IntRect bounds = new IntRect();
-	private float baseSeaLevel = .25f;
+	private static final float baseSeaLevel = .25f;
 	private float seaLevel = baseSeaLevel;
-	private float baseHillLevel = .7f;
+	private static final float baseHillLevel = .7f;
 	private float hillLevel = baseHillLevel;
-	private float seaLevelRaisingChange = 0.01f;
-	private float seaLevelLoweringChange = -0.0025f;
+	private static final float seaLevelRaisingChange = 0.01f;
+	private static final float seaLevelLoweringChange = -0.0025f;
 	private float seaLevelChange = 0;
 	private float lastSeaLevel = 0;
+	private boolean coalOverlay = true;
+	private Vector2 sp = new Vector2();
+	
 	
 	public Map() {
 		Pixmap terrain = new Pixmap(Gdx.files.internal("map2.png"));
@@ -108,9 +117,7 @@ public class Map {
 		}
 	}
 
-	private boolean coalOverlay = true;
-	private Vector2 sp = new Vector2();
-	public void update (Vector2 tp, float delta) {
+	public void update(Vector2 tp, float delta) {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
 			coalOverlay = !coalOverlay;
 		}
@@ -125,10 +132,6 @@ public class Map {
 	public boolean isSeaLevelHigh() {
 		return seaLevel >= hillLevel;
 	}
-
-	public static int TILE_TYPE_WATER = 0;
-	public static int TILE_TYPE_GROUND = 1;
-	public static int TILE_TYPE_HILL = 2;
 
 	public void seaRising () {
 		seaLevelChange = seaLevelRaisingChange;
@@ -151,6 +154,7 @@ public class Map {
 	}
 
 	public static class Tile {
+		
 		public final int x, y, index;
 		final float rawElevation;
 		public final float elevation;
@@ -167,8 +171,10 @@ public class Map {
 			this.elevation = Maths.map(elevation, 0, 1, ELEV_MIN, ELEV_MAX);
 		}
 
-		@Override public String toString () {
+		@Override 
+		public String toString () {
 			return "Tile{" + "x=" + x + ", y=" + y + '}';
 		}
 	}
+	
 }

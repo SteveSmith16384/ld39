@@ -8,6 +8,7 @@ import io.piotrjastrzebski.ld39.game.Research;
 public class SolarPanel extends Building<SolarPanel> implements IPowerProducer, IPowerConnector {
 	
     protected final static float powerPerSecond = 10; // pre efficiency scale
+    
     private float powerCap = 50;
     private float power;
 
@@ -72,7 +73,8 @@ public class SolarPanel extends Building<SolarPanel> implements IPowerProducer, 
         return power;
     }
 
-    @Override public float consume (float totalPower) {
+    @Override 
+    public float consume (float totalPower) {
         float consumed = power - totalPower;
         power -= totalPower;
         if (consumed < 0) {

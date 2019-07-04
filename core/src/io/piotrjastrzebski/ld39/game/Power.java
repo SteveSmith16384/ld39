@@ -7,21 +7,24 @@ import com.badlogic.gdx.utils.ObjectSet;
 import io.piotrjastrzebski.ld39.game.building.*;
 
 public class Power {
+	
     private float totalPower;
-    private float requiredPower;
+    //private float requiredPower;
     private Buildings buildings;
-
-    public Power (Buildings buildings) {
-        this.buildings = buildings;
-    }
 
     private Array<IPowerProducer> allProducers = new Array<>();
     private Array<IPowerConsumer> allConsumers = new Array<>();
     private Array<Grid> grids = new Array<>();
+
+    public Power(Buildings buildings) {
+        this.buildings = buildings;
+    }
+
     public void update(float delta) {
         totalPower = 0;
         allConsumers.clear();
         allProducers.clear();
+        
         for (Building building : buildings.getAll()) {
             if (building instanceof IPowerProducer) {
                 allProducers.add((IPowerProducer)building);
@@ -60,9 +63,9 @@ public class Power {
                 gridPower += producer.storage();
             }
 
-            requiredPower = 0;
+            //requiredPower = 0;
             for (IPowerConsumer consumer : grid.consumers) {
-                requiredPower += consumer.required();
+                //requiredPower += consumer.required();
                 gridRequired += consumer.required();
             }
 
@@ -78,7 +81,9 @@ public class Power {
     }
 
     private void addConnectors (Grid grid, IPowerConnector source) {
-        if (!grid.connectors.add(source)) return;
+        if (!grid.connectors.add(source)) {
+        	return;
+        }
         if (source instanceof IPowerProducer) {
             grid.producers.add((IPowerProducer)source);
         }

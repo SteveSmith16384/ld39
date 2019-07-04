@@ -9,21 +9,25 @@ import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 
 public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalConsumer, IPowerConnector, IPowerProducer {
-    private Array<Coal> coals = new Array<>();
-    private int coalCap = 10;
-    private float burnrate = 10;
+	
+    private static final int coalCap = 10;
+    private static final float powerCap = 1000;
+    private static final float ghgPerSecond = 0.0005f;
+    private static final float burnrate = 10;
+    private static final float genPerSecond = 20;
+
+    private Array<Coal> coals = new Array<>();    
     private float burningCoal;
-    private float genPerSecond = 20;
     private float power;
-    private float powerCap = 1000;
-    private float ghgPerSecond = 0.0005f;
+    private boolean generating;
+
     public CoalPowerPlant (int x, int y) {
         super("Coal Power Plant", 500, x, y, 3, 2);
         tint.set(Color.FIREBRICK);
     }
 
-    boolean generating;
-    @Override public void update (float delta) {
+    @Override 
+    public void update (float delta) {
         super.update(delta);
         if (burningCoal <= 0 && coals.size > 0) {
             burningCoal = coals.pop().value;
@@ -31,7 +35,9 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalCon
         if (burningCoal > 0) {
             burningCoal -= burnrate * delta;
             power += genPerSecond * delta;
-            if (power > powerCap) power = powerCap;
+            if (power > powerCap) {
+            	power = powerCap;
+            }
             generating = true;
             buildings.GHG.addGHG(ghgPerSecond * delta);
         } else {
@@ -39,7 +45,8 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalCon
         }
     }
 
-    @Override public String info () {
+    @Override 
+    public String info () {
         StringBuilder sb = new StringBuilder(name);
         float allCoal = burningCoal;
         for (Coal coal : coals) {
@@ -56,12 +63,14 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalCon
         return sb.toString();
     }
 
-    @Override public void drawDebug (ShapeRenderer shapes) {
+    @Override 
+    public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
 
     }
 
-    @Override public void drawDebug2 (ShapeRenderer shapes) {
+    @Override 
+    public void drawDebug2 (ShapeRenderer shapes) {
         super.drawDebug2(shapes);
         if (generating) {
             shapes.setColor(0, 0, 0, .5f);
@@ -78,8 +87,11 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements ICoalCon
         }
     }
 
-    @Override public boolean accept (Coal coal) {
-        if (coals.size > coalCap) return false;
+    @Override 
+    public boolean accept (Coal coal) {
+        if (coals.size > coalCap) {
+        	return false;
+        }
         coals.add(coal);
         return true;
     }

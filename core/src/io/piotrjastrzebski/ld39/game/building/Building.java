@@ -13,7 +13,7 @@ public abstract class Building<T extends Building> {
     public final int SOUTH = 1;
     public final int WEST = 2;
     public final int NORTH = 3;
-    public final float buildCost;
+    public final int buildCost;
     public final String name;
     public IntRect bounds = new IntRect();
     public Color tint = new Color(1, 1, 1, 1);
@@ -25,7 +25,7 @@ public abstract class Building<T extends Building> {
     protected float floodedTime;
     protected float floodedDemolishTimer = 5;
 
-    public Building (String name, float buildCost, int x, int y, int width, int height) {
+    public Building (String name, int buildCost, int x, int y, int width, int height) {
         this.name = name;
         this.buildCost = buildCost;
         bounds.set(x, y, width, height);

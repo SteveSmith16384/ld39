@@ -6,10 +6,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectSet;
 
 public class ResearchLab extends Building<ResearchLab> implements IPowerConnector, IPowerConsumer {
-	private float powerRequiredToRun = 100;
+	
+	private static final float powerRequiredToRun = 100;
+	
 	private float powerRequiredToRunFrame;
 	private boolean powered;
 	private float powerTimer;
+	
 	public ResearchLab (int x, int y) {
 		super("Research Lab", 1000, x, y, 3, 3);
 		tint.set(Color.LIGHT_GRAY);
@@ -88,12 +91,12 @@ public class ResearchLab extends Building<ResearchLab> implements IPowerConnecto
 	}
 
 	@Override 
-	public void provide () {
+	public void provide() {
 		powered = true;
 		powerTimer = 1;
 	}
 
-	public boolean isPowered () {
+	public boolean isPowered() {
 		return powered;
 	}
 }

@@ -9,19 +9,28 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.piotrjastrzebski.ld39.game.Map;
-import io.piotrjastrzebski.ld39.game.GHG;
+import io.piotrjastrzebski.ld39.GameData;
+import io.piotrjastrzebski.ld39.game.GreenhouseGasses;
 
 import java.util.Iterator;
 
 public class Buildings implements InputProcessor {
-    private Array<Building> templates = new Array<>();
-    private Array<Building> buildings = new Array<>();
+	
+    private Array<Building<?>> templates = new Array<>();
+    private Array<Building<?>> buildings = new Array<>();
 
     private Viewport viewport;
     private Map map;
     private GestureDetector detector;
-    private Array<Building> all;
-    GHG GHG;
+    private Array<Building<?>> all;
+    protected GreenhouseGasses GHG;
+    private Vector2 tmp = new Vector2();
+
+    private boolean demolish;
+    private Building build;
+
+    private int lastX;
+    private int lastY;
 
     public Buildings (Viewport viewport, Map map) {
         this.viewport = viewport;
@@ -33,7 +42,8 @@ public class Buildings implements InputProcessor {
         templates.add(new UtilityPole(0, 0));
         templates.add(new ResearchLab(0, 0));
         templates.add(new SolarPanel(0, 0));
-        for (Building building : templates) {
+        
+        for (Building<?> building : templates) {
             building.map = map;
             building.buildings = this;
         }
@@ -57,8 +67,8 @@ public class Buildings implements InputProcessor {
         });
     }
 
-    private boolean executeDemolish () {
-        Iterator<Building> it = buildings.iterator();
+    private boolean executeDemolish() {
+        Iterator<Building<?>> it = buildings.iterator();
         while (it.hasNext()) {
             Building next = it.next();
             if (next.bounds.contains(tmp)) {
@@ -80,7 +90,7 @@ public class Buildings implements InputProcessor {
         demolish = false;
     }
 
-    void demolish (Building building) {
+    protected void demolish(Building building) {
         if (!buildings.removeValue(building, true)) return;
         for (int ox = 0; ox < building.bounds.width; ox++) {
             for (int oy = 0; oy < building.bounds.height; oy++) {
@@ -95,7 +105,16 @@ public class Buildings implements InputProcessor {
      }
 
     private boolean finishBuilding () {
-        if (build == null) return false;
+    	// Check cash
+    	if (build.buildCost > GameData.cash) {
+        	return false;
+    	}
+    	
+        if (build == null) {
+        	return false;
+        }
+        GameData.cash -= build.buildCost;
+        
         build.tint.a = 1;
         if (!checkLocation(build)) return false;
         Building duplicate = build.duplicate();
@@ -124,13 +143,12 @@ public class Buildings implements InputProcessor {
         build = null;
     }
 
-    public Array<Building> templates () {
+    public Array<Building<?>> templates () {
         return templates;
     }
 
-    boolean demolish;
-    Building build;
-    public void build (Building building) {
+   
+    public void build(Building building) {
         demolish = false;
         build = building.duplicate();
         build.tint.a = .5f;
@@ -140,9 +158,7 @@ public class Buildings implements InputProcessor {
         demolish = true;
     }
 
-    private int lastX;
-    private int lastY;
-    public void update (float delta) {
+    public void update(float delta) {
         for (Building building : buildings) {
             building.update(delta);
         }
@@ -232,7 +248,7 @@ public class Buildings implements InputProcessor {
         return true;
     }
 
-    private Vector2 tmp = new Vector2();
+    
     @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         viewport.unproject(tmp.set(screenX, screenY));
         detector.touchDown(screenX, screenY, pointer, button);
@@ -251,7 +267,8 @@ public class Buildings implements InputProcessor {
         return false;
     }
 
-    @Override public boolean mouseMoved (int screenX, int screenY) {
+    @Override 
+    public boolean mouseMoved (int screenX, int screenY) {
         viewport.unproject(tmp.set(screenX, screenY));
         return false;
     }
@@ -272,11 +289,11 @@ public class Buildings implements InputProcessor {
         return false;
     }
 
-    public Array<Building> getAll () {
+    public Array<Building<?>> getAll() {
         return buildings;
     }
 
-    public void setGHG (GHG GHG) {
+    public void setGHG (GreenhouseGasses GHG) {
         this.GHG = GHG;
     }
 }

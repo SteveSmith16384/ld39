@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class CameraController implements InputProcessor {
+	
     private final static float MIN_ZOOM = .5f;
     private final static float MAX_ZOOM = 3f;
     private final int MOVE_BUTTON = Input.Buttons.LEFT;
@@ -58,7 +59,8 @@ public class CameraController implements InputProcessor {
         return false;
     }
 
-    @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+    @Override 
+    public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         viewport.unproject(tmp.set(screenX, screenY));
         if (moving && button == MOVE_BUTTON) {
 //            Gdx.app.log("WTF?", "touch up " + tmp.x + " " + tmp.y);
